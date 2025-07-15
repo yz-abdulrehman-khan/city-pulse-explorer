@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
+import { AppProvider } from "@/components/layout/app-provider";
 
 export const metadata: Metadata = {
   title: "City Pulse",
@@ -17,8 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <Header />
-        <main className="flex-1 px-6 sm:px-8 md:px-10">{children}</main>
+        <AppProvider>
+          <Header />
+          <main className="flex-1 px-6 sm:px-8 md:px-10">{children}</main>
+        </AppProvider>
       </body>
     </html>
   );
