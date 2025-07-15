@@ -1,0 +1,88 @@
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { getEventById } from "@/lib/ticketmaster";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon, MapPinIcon, TicketIcon } from "lucide-react";
+import { FavoriteButton } from "@/components/events/favorite-button";
+
+interface EventPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function EventPage({ params }: EventPageProps) {
+  const event = await getEventById(params.id);
+
+  // If no event is found, render the 404 page
+  if (!event) {
+    notFound();
+  }
+
+  const venue = event._embedded?.venues[0];
+  // Find the best available image, preferably a 16_9 ratio for detail pages
+  const eventImage =
+    event.images.find((image) => image.ratio === "16_9")?.url ||
+    event.images.find((image) => image.ratio === "3_2")?.url ||
+    event.images[0]?.url;
+
+  return (
+    <div className="container mx-auto max-w-5xl py-12">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
+        {/* Image Column */}
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg shadow-lg">
+          {eventImage ? (
+            <Image
+              src={eventImage || "/placeholder.svg"}
+              alt={event.name}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-muted">
+              <TicketIcon className="h-16 w-16 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+
+        {/* Details Column */}
+        <div className="flex flex-col space-y-6">
+          <h1 className="text-4xl font-extrabold tracking-tight">
+            {event.name}
+          </h1>
+
+          <div className="flex flex-col space-y-4 text-lg text-muted-foreground">
+            <div className="flex items-center">
+              <CalendarIcon className="mr-3 h-5 w-5" />
+              <span>
+                {event.dates.start.localDate} at {event.dates.start.localTime}
+              </span>
+            </div>
+            {venue && (
+              <div className="flex items-center">
+                <MapPinIcon className="mr-3 h-5 w-5" />
+                <span>
+                  {venue.name} - {venue.city.name}, {venue.address.line1}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {event.info && (
+            <p className="text-base leading-relaxed">{event.info}</p>
+          )}
+
+          <div className="flex items-center space-x-4">
+            <Button asChild size="lg" className="flex-grow">
+              <a href={event.url} target="_blank" rel="noopener noreferrer">
+                Buy Tickets
+                <TicketIcon className="ml-2 h-5 w-5" />
+              </a>
+            </Button>
+            <FavoriteButton eventId={event.id} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

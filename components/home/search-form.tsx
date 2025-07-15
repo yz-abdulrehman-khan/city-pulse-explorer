@@ -1,11 +1,10 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Search } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { Search, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,13 +16,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
-const formSchema = z.object({
-  keyword: z.string().min(1, { message: "error" }),
-  city: z.string().min(1, { message: "error" }),
-});
+const formSchema = z
+  .object({
+    keyword: z.string(),
+    city: z.string(),
+  })
+  .refine((data) => data.keyword.length > 0 || data.city.length > 0, {
+    message: "Please enter a keyword or a city.",
+    path: ["keyword"],
+  });
 
-export function SearchForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+type SearchFormValues = z.infer<typeof formSchema>;
+
+interface SearchFormProps {
+  onSearch: (values: SearchFormValues) => void;
+  isSearching: boolean;
+}
+
+export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
+  const form = useForm<SearchFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       keyword: "",
@@ -31,16 +42,40 @@ export function SearchForm() {
     },
   });
 
-  const { errors } = form.formState;
+  const { isValid } = form.formState;
+  const locationFetchedRef = useRef(false);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  useEffect(() => {
+    if (locationFetchedRef.current) return;
+
+    locationFetchedRef.current = true; // Prevent this from running more than once
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+          );
+          const data = await response.json();
+          if (data.city) {
+            form.setValue("city", data.city, { shouldValidate: true });
+            // Automatically trigger search with the fetched city
+            onSearch({ keyword: "", city: data.city });
+          }
+        } catch (error) {
+          console.error("Error fetching city from location:", error);
+        }
+      },
+      (error) => {
+        console.error("Error getting user location:", error);
+      }
+    );
+  }, [form, onSearch]);
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex w-full flex-col rounded-lg border bg-card p-3 shadow-sm md:flex-row md:items-center md:space-x-2 md:space-y-0">
+      <form onSubmit={form.handleSubmit(onSearch)}>
+        <div className="flex w-full flex-col rounded-lg bg-card p-3 md:flex-row md:items-center md:space-x-2 md:space-y-0">
           <FormField
             control={form.control}
             name="keyword"
@@ -52,10 +87,7 @@ export function SearchForm() {
                 <FormControl>
                   <Input
                     placeholder="Event, artist, or venue"
-                    className={cn(
-                      "rounded-none border-0 border-b border-transparent p-0 text-base transition-colors focus-visible:ring-0 focus-visible:ring-offset-0",
-                      errors.keyword && "border-destructive"
-                    )}
+                    className="rounded-none border-0 border-b border-input p-0 text-base transition-colors focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0"
                     {...field}
                   />
                 </FormControl>
@@ -72,14 +104,14 @@ export function SearchForm() {
                   WHERE
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="City, state, or zip code"
-                    className={cn(
-                      "rounded-none border-0 border-b border-transparent p-0 text-base transition-colors focus-visible:ring-0 focus-visible:ring-offset-0",
-                      errors.city && "border-destructive"
-                    )}
-                    {...field}
-                  />
+                  <div className="relative flex items-center">
+                    <MapPin className="absolute left-0 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      placeholder="City, state, or zip code"
+                      className="rounded-none border-0 border-b border-input p-0 pl-7 text-base transition-colors focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0"
+                      {...field}
+                    />
+                  </div>
                 </FormControl>
               </FormItem>
             )}
@@ -88,6 +120,7 @@ export function SearchForm() {
             type="submit"
             size="icon"
             className="h-12 w-12 flex-shrink-0 cursor-pointer"
+            disabled={!isValid || isSearching}
           >
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>

@@ -4,7 +4,10 @@ export interface TicketmasterEvent {
   id: string;
   name: string;
   url: string;
-  images: { url: string }[];
+  info?: string;
+  images: {
+      ratio: string; url: string 
+}[];
   dates: {
     start: {
       localDate: string;
@@ -47,5 +50,23 @@ export async function searchEvents(
     // In case of an API error, we'll return an empty array
     // to prevent the app from crashing.
     return [];
+  }
+}
+
+export async function getEventById(
+  id: string
+): Promise<TicketmasterEvent | null> {
+  try {
+    const response = await ticketmasterApi.get(`events/${id}.json`, {
+      params: {
+        apikey: process.env.TICKETMASTER_API_KEY,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    // If the event is not found, Ticketmaster returns a 404, which axios will throw as an error.
+    // We'll log the error for debugging but return null to the caller.
+    console.error(`Error fetching event with ID ${id}:`, error);
+    return null;
   }
 }
