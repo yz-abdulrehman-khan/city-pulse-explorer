@@ -132,19 +132,5 @@ city-pulse-explorer/
 ![User Profile](https://github.com/user-attachments/assets/4e145856-f5c3-4148-84ac-eb3675dbfd84)
 
 
----
-
-## Contributing 🤝
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a pull request
-
-
----
 
 Built with ❤️ by ArK | [Live Demo](https://city-pulse-explorer.vercel.app/)
