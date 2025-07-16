@@ -17,7 +17,7 @@ const USERS_KEY = "city-pulse-users";
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
-  currentUser: string | null; 
+  currentUser: string | null;
   login: (email: string, password: string, rememberMe: boolean) => boolean;
   logout: () => void;
   signup: (
@@ -125,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setCurrentUser(email);
       const storage = rememberMe ? window.localStorage : window.sessionStorage;
       storage.setItem(AUTH_TOKEN_KEY, newToken);
-      router.push("/profile");
+      router.push("/");
       return true;
     },
     [router]
