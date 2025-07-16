@@ -78,8 +78,14 @@ export async function getEventById(
       },
     });
     return response.data;
-  } catch (error) {
-    console.error(`Error fetching event with ID ${id}:`, error);
-    return null;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 429) {
+        // Too many requests
+        console.error("Rate limit hit. Please slow down.");
+        return null;
+      }
+    }
+    throw error;
   }
 }

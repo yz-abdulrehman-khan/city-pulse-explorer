@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { SearchForm } from "@/components/home/search-form";
 import { EventCard, EventCardSkeleton } from "@/components/home/event-card";
-import { findEventsAction } from "./actions";
+import { findEventsAction } from "../actions";
 import type { TicketmasterResponse } from "@/lib/ticketmaster";
 import { PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";

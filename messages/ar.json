@@ -1,0 +1,13 @@
+{
+    "Home": {
+      "title": "Welcome to City Pulse",
+      "subtitle": "Find events around you"
+    },
+    "Auth": {
+      "login": "Login",
+      "signup": "Sign up",
+      "email": "Email",
+      "password": "Password"
+    }
+  }
+  
