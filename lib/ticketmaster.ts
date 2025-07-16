@@ -6,8 +6,8 @@ export interface TicketmasterEvent {
   id: string;
   name: string;
   url: string;
-  info?: string; // Add the optional info/description field
-  images: { url: string }[];
+  info?: string;
+  images: { url: string; ratio?: string }[];
   dates: {
     start: {
       localDate: string;
@@ -20,6 +20,10 @@ export interface TicketmasterEvent {
       city: { name: string };
       country: { name: string };
       address: { line1: string };
+      location?: {
+        longitude: string;
+        latitude: string;
+      };
     }[];
   };
 }

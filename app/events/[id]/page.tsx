@@ -4,6 +4,7 @@ import { getEventById } from "@/lib/ticketmaster";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, MapPinIcon, TicketIcon } from "lucide-react";
 import { FavoriteButton } from "@/components/events/favorite-button";
+import { EventMapLoader } from "@/components/events/event-map-loader";
 
 interface EventPageProps {
   params: {
@@ -14,13 +15,13 @@ interface EventPageProps {
 export default async function EventPage({ params }: EventPageProps) {
   const event = await getEventById(params.id);
 
-  // If no event is found, render the 404 page
   if (!event) {
     notFound();
   }
 
   const venue = event._embedded?.venues[0];
-  // Find the best available image, preferably a 16_9 ratio for detail pages
+
+  // Find the best available image
   const eventImage =
     event.images.find((image) => image.ratio === "16_9")?.url ||
     event.images.find((image) => image.ratio === "3_2")?.url ||
@@ -83,6 +84,27 @@ export default async function EventPage({ params }: EventPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Map Section */}
+      {venue &&
+        venue.location &&
+        venue.location.latitude &&
+        venue.location.longitude && (
+          <div className="mt-12">
+            <h2 className="mb-4 text-3xl font-extrabold tracking-tight">
+              Venue Location
+            </h2>
+            <div className="h-96 w-full">
+              <EventMapLoader
+                position={[
+                  Number.parseFloat(venue.location.latitude),
+                  Number.parseFloat(venue.location.longitude),
+                ]}
+                venueName={venue.name}
+              />
+            </div>
+          </div>
+        )}
     </div>
   );
 }
