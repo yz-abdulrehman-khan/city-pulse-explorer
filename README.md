@@ -147,4 +147,4 @@ We welcome contributions! Please follow these steps:
 
 ---
 
-Built with ❤️ by ArK | [Live Demo](https://your-demo-link.com)
+Built with ❤️ by ArK | [Live Demo](https://city-pulse-explorer.vercel.app/)
