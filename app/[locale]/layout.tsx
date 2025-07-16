@@ -1,32 +1,67 @@
-import { ReactNode } from "react";
-import { NextIntlClientProvider, useMessages } from "next-intl";
 import { notFound } from "next/navigation";
-
-const SUPPORTED_LOCALES = ["en", "ar"];
+import { Locale, hasLocale, NextIntlClientProvider } from "next-intl";
+import {
+  getTranslations,
+  setRequestLocale,
+  getMessages,
+} from "next-intl/server";
+import { ReactNode } from "react";
+import { GeistSans } from "geist/font/sans"; // or Inter if you prefer
+import { routing } from "@/i18n/routing";
+import { Header } from "@/components/layout/header"; // Or Navigation
+import { AppProvider } from "@/components/layout/app-provider";
+import { Toaster } from "@/components/ui/toaster";
+import "../globals.css";
 
 type Props = {
   children: ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: Locale }>;
 };
 
 export function generateStaticParams() {
-  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+  return routing.locales.map((locale) => ({ locale }));
 }
 
-export default function LocaleLayout({ children, params }: Props) {
-  const { locale } = params;
+export async function generateMetadata(props: Omit<Props, "children">) {
+  const { locale } = await props.params;
+  const t = await getTranslations({ locale, namespace: "LocaleLayout" });
 
+  return {
+    title: t("title"),
+    // description: t("description"), // Uncomment if you have it
+  };
+}
 
-  if (!SUPPORTED_LOCALES.includes(locale)) {
+export default async function LocaleLayout({ children, params }: Props) {
+  // Get locale from params
+  const { locale } = await params;
+
+  // Guard: only allow valid locales
+  if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
-  // Load messages for current locale
-  const messages = useMessages();
+  // Set request-wide locale for SSR
+  setRequestLocale(locale);
+
+  // Get all translations/messages for current locale
+  const messages = await getMessages();
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      {children}
-    </NextIntlClientProvider>
+    <html
+      lang={locale}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      className={GeistSans.className}
+    >
+      <body className="min-h-screen bg-background font-sans antialiased">
+        <AppProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <Header />
+            <main className="flex-1">{children}</main>
+          </NextIntlClientProvider>
+          <Toaster />
+        </AppProvider>
+      </body>
+    </html>
   );
 }

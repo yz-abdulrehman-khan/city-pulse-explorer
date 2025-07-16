@@ -2,15 +2,114 @@
 // See: https://next-intl.dev/docs/workflows/typescript#messages-arguments
 
 declare const messages: {
-    "Home": {
-      "title": "مرحبًا بك في سيتي بالس",
-      "subtitle": "ابحث عن الفعاليات حولك"
+  "Home": {
+    "title": "Discover Events Happening Around You",
+    "subtitle": "Your ultimate guide to local concerts, sports, theater, and more. Find your next experience with City Pulse.",
+    "findExperienceTitle": "Find your next experience",
+    "findExperienceSubtitle": "Start by searching for an event, artist, or city above.",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {current} of {total}"
     },
-    "Auth": {
-      "login": "تسجيل الدخول",
-      "signup": "إنشاء حساب",
-      "email": "البريد الإلكتروني",
-      "password": "كلمة المرور"
-    }
-  };
+    "noEventsTitle": "No events found",
+    "noEventsSubtitle": "Try adjusting your search criteria."
+  },
+  "Login": {
+    "title": "Login",
+    "subtitle": "Enter your credentials to access your profile",
+    "emailLabel": "Email",
+    "emailPlaceholder": "m@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "rememberMe": "Remember me",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "formError": "Invalid email or password. Please try again or sign up.",
+    "noAccount": "Don't have an account?",
+    "signupLink": "Sign up"
+  },
+  "Signup": {
+    "title": "Sign Up",
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@email.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "homeCityLabel": "Home City",
+    "homeCityPlaceholder": "e.g., New York",
+    "signupButton": "Sign Up",
+    "errorUserExists": "User already exists. Please use a different email.",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginLink": "Log In"
+  },
+  "Profile": {
+    "myProfile": "My Profile",
+    "updateDetails": "Update your personal details and manage your preferences.",
+    "favoriteEvents": "Favorite Events",
+    "savedEvents": "Here are the events you've saved for later."
+  },
+  "ProfileForm": {
+    "title": "Personal Details",
+    "description": "This information will be saved on this device.",
+    "name": "Name",
+    "homeCity": "Home City",
+    "namePlaceholder": "Your name",
+    "homeCityPlaceholder": "e.g., New York",
+    "save": "Save Changes",
+    "updatedTitle": "Profile Updated",
+    "updatedDescription": "Your details have been saved successfully.",
+    "nameValidation": "Name must be at least 2 characters.",
+    "cityValidation": "City must be at least 2 characters."
+  },
+  "Form": {
+    "what": "WHAT",
+    "where": "WHERE",
+    "event_artist_venue": "Event, artist, or venue",
+    "city_placeholder": "City, state, or zip code",
+    "no_city_found": "No city found.",
+    "search": "Search",
+    "please_enter": "Please enter a keyword or a city.",
+    "at_least_characters": "At least 6 characters",
+    "name_too_short": "Name is too short",
+    "city_too_short": "Enter your city"
+  },
+  "EventDetails": {
+    "buyTickets": "Buy Tickets",
+    "venueLocation": "Venue Location",
+    "dateAtTime": "{{date}} at {{time}}",
+    "venueFull": "{{venue}}, {{city}}, {{address}}"
+  },
+  "Header": {
+    "brand": "City Pulse",
+    "profile": "Profile",
+    "login": "Login",
+    "signup": "Sign up"
+  },
+  "Toasts": {
+    "profile_updated_title": "Profile Updated",
+    "profile_updated_desc": "Your details have been saved successfully."
+  },
+  "Loading": {
+    "loading": "Loading..."
+  },
+  "LocaleLayout": {
+    "title": "City Pulse",
+    "description": "Your local events explorer"
+  },
+  "FavoriteEventsList": {
+    "noFavoritesTitle": "No Favorite Events",
+    "noFavoritesDescription": "You haven't saved any events yet. Start exploring!"
+  },
+  "SearchForm": {
+    "whatLabel": "WHAT",
+    "whatPlaceholder": "Event, artist, or venue",
+    "whereLabel": "WHERE",
+    "wherePlaceholder": "City, state, or zip code",
+    "noCityFound": "No city found.",
+    "search": "Search",
+    "validation": "Please enter a keyword or a city."
+  }
+};
 export default messages;

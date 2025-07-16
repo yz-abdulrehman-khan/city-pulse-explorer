@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { getEventById } from "@/lib/ticketmaster";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ interface EventPageProps {
 }
 
 export default async function EventPage({ params }: EventPageProps) {
+  const t = await getTranslations("EventDetails");
   const event = await getEventById(params.id);
 
   if (!event) {
@@ -76,7 +78,7 @@ export default async function EventPage({ params }: EventPageProps) {
           <div className="flex items-center space-x-4">
             <Button asChild size="lg" className="flex-grow">
               <a href={event.url} target="_blank" rel="noopener noreferrer">
-                Buy Tickets
+                {t("buyTickets")}
                 <TicketIcon className="ml-2 h-5 w-5" />
               </a>
             </Button>
@@ -92,7 +94,7 @@ export default async function EventPage({ params }: EventPageProps) {
         venue.location.longitude && (
           <div className="mt-12">
             <h2 className="mb-4 text-3xl font-extrabold tracking-tight">
-              Venue Location
+              {t("venueLocation")}
             </h2>
             <div className="h-96 w-full">
               <EventMapLoader

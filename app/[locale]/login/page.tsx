@@ -16,20 +16,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Search } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
-import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const loginFormSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(1, { message: "Password is required." }),
+  email: z.string().email({ message: "Login.formError" }),
+  password: z.string().min(1, { message: "Login.formError" }),
   rememberMe: z.boolean().default(false).optional(),
 });
 
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 export default function LoginPage() {
+  const t = useTranslations("Login");
   const { login } = useAuth();
   const router = useRouter();
 
@@ -52,7 +52,7 @@ export default function LoginPage() {
     const success = login(data.email, data.password, data.rememberMe || false);
     setIsLoading(false);
     if (!success) {
-      setFormError("Invalid email or password. Please try again or sign up.");
+      setFormError(t("formError"));
       return;
     }
     // Otherwise, redirected to /profile by context
@@ -63,9 +63,9 @@ export default function LoginPage() {
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Login</h1>
+            <h1 className="text-3xl font-bold">{t("title")}</h1>
             <p className="text-balance text-muted-foreground">
-              Enter your credentials to access your profile
+              {t("subtitle")}
             </p>
           </div>
           <Form {...form}>
@@ -75,11 +75,11 @@ export default function LoginPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("emailLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="m@example.com"
+                        placeholder={t("emailPlaceholder")}
                         {...field}
                         autoComplete="username"
                       />
@@ -93,11 +93,11 @@ export default function LoginPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("passwordLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="••••••••"
+                        placeholder={t("passwordPlaceholder")}
                         {...field}
                         autoComplete="current-password"
                       />
@@ -122,13 +122,13 @@ export default function LoginPage() {
                       htmlFor="remember-me"
                       className="cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                      Remember me
+                      {t("rememberMe")}
                     </Label>
                   </FormItem>
                 )}
               />
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
+                {isLoading ? t("loggingIn") : t("loginButton")}
               </Button>
               {formError && (
                 <div className="text-red-600 text-center text-sm mt-1">
@@ -138,12 +138,12 @@ export default function LoginPage() {
             </form>
           </Form>
           <p className="text-center text-sm mt-4">
-            Don&apos;t have an account?{" "}
+            {t("noAccount")}{" "}
             <a
               href="/signup"
               className="underline text-primary hover:text-primary/80 font-medium"
             >
-              Sign up
+              {t("signupLink")}
             </a>
           </p>
         </div>

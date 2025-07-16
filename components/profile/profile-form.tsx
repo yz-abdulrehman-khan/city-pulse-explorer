@@ -22,21 +22,23 @@ import {
 } from "@/components/ui/card";
 import { useProfile } from "@/hooks/use-profile";
 import { useToast } from "@/hooks/use-toast";
-
-const profileFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  homeCity: z.string().min(2, {
-    message: "City must be at least 2 characters.",
-  }),
-});
-
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+import { useTranslations } from "next-intl";
 
 export function ProfileForm() {
+  const t = useTranslations("ProfileForm");
   const { profile, saveProfile } = useProfile();
   const { toast } = useToast();
+
+  const profileFormSchema = z.object({
+    name: z.string().min(2, {
+      message: t("nameValidation"),
+    }),
+    homeCity: z.string().min(2, {
+      message: t("cityValidation"),
+    }),
+  });
+
+  type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -44,25 +46,22 @@ export function ProfileForm() {
       name: "",
       homeCity: "",
     },
-    // Pass the loaded profile data to the form
     values: profile,
   });
 
   function onSubmit(data: ProfileFormValues) {
     saveProfile(data);
     toast({
-      title: "Profile Updated",
-      description: "Your details have been saved successfully.",
+      title: t("updatedTitle"),
+      description: t("updatedDescription"),
     });
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Personal Details</CardTitle>
-        <CardDescription>
-          This information will be saved on this device.
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -72,9 +71,9 @@ export function ProfileForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{t("name")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your name" {...field} />
+                    <Input placeholder={t("namePlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -85,9 +84,9 @@ export function ProfileForm() {
               name="homeCity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Home City</FormLabel>
+                  <FormLabel>{t("homeCity")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., New York" {...field} />
+                    <Input placeholder={t("homeCityPlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -96,7 +95,7 @@ export function ProfileForm() {
           </CardContent>
           <CardFooter className="border-t px-6 py-4">
             <Button type="submit" disabled={!form.formState.isDirty}>
-              Save Changes
+              {t("save")}
             </Button>
           </CardFooter>
         </form>

@@ -18,25 +18,28 @@ import { Separator } from "@/components/ui/separator";
 import { Combobox } from "@headlessui/react";
 import { cn } from "@/lib/utils";
 import { CITIES } from "@/lib/cities";
-
-const formSchema = z
-  .object({
-    keyword: z.string(),
-    city: z.string(),
-  })
-  .refine((data) => data.keyword.length > 0 || data.city.length > 0, {
-    message: "Please enter a keyword or a city.",
-    path: ["keyword"],
-  });
-
-type SearchFormValues = z.infer<typeof formSchema>;
+import { useTranslations } from "next-intl";
 
 interface SearchFormProps {
-  onSearch: (values: SearchFormValues) => void;
+  onSearch: (values: any) => void;
   isSearching: boolean;
 }
 
 export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
+  const t = useTranslations("SearchForm");
+
+  const formSchema = z
+    .object({
+      keyword: z.string(),
+      city: z.string(),
+    })
+    .refine((data) => data.keyword.length > 0 || data.city.length > 0, {
+      message: t("validation"),
+      path: ["keyword"],
+    });
+
+  type SearchFormValues = z.infer<typeof formSchema>;
+
   const form = useForm<SearchFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -103,11 +106,11 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel className="text-xs font-semibold text-muted-foreground">
-                  WHAT
+                  {t("whatLabel")}
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Event, artist, or venue"
+                    placeholder={t("whatPlaceholder")}
                     className="rounded-none border-0 border-b border-input p-0 text-base transition-colors focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0"
                     {...field}
                   />
@@ -125,7 +128,7 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel className="text-xs font-semibold text-muted-foreground">
-                  WHERE
+                  {t("whereLabel")}
                 </FormLabel>
                 <FormControl>
                   <div className="relative flex items-center">
@@ -139,7 +142,7 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
                     >
                       <div className="relative w-full">
                         <Combobox.Input
-                          placeholder="City, state, or zip code"
+                          placeholder={t("wherePlaceholder")}
                           className={cn(
                             "rounded-none border-0 border-b border-input p-0 pl-7 text-base transition-colors bg-transparent w-full",
                             "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 min-w-0 md:text-sm",
@@ -157,12 +160,12 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
                         <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-card py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none z-50">
                           {filteredCities.length === 0 && query !== "" ? (
                             <div className="relative cursor-default select-none px-4 py-2 text-muted-foreground">
-                              No city found.
+                              {t("noCityFound")}
                             </div>
                           ) : (
                             filteredCities.map((city, idx) => (
                               <Combobox.Option
-                                key={city + "_" + idx} // <--- force unique keys!
+                                key={city + "_" + idx}
                                 value={city}
                                 className={({ active }) =>
                                   cn(
@@ -192,7 +195,7 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
             disabled={!isValid || isSearching}
           >
             <Search className="h-5 w-5" />
-            <span className="sr-only">Search</span>
+            <span className="sr-only">{t("search")}</span>
           </Button>
         </div>
       </form>

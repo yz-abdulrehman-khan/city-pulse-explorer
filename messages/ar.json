@@ -1,13 +1,111 @@
 {
-    "Home": {
-      "title": "Welcome to City Pulse",
-      "subtitle": "Find events around you"
+  "Home": {
+    "title": "اكتشف الفعاليات من حولك",
+    "subtitle": "دليلك الشامل للحفلات، الرياضة، المسرح والمزيد. ابحث عن تجربتك القادمة مع سيتي بالس.",
+    "findExperienceTitle": "ابحث عن تجربتك القادمة",
+    "findExperienceSubtitle": "ابدأ بالبحث عن فعالية أو فنان أو مدينة في الأعلى.",
+    "pagination": {
+      "previous": "السابق",
+      "next": "التالي",
+      "page": "الصفحة {current} من {total}"
     },
-    "Auth": {
-      "login": "Login",
-      "signup": "Sign up",
-      "email": "Email",
-      "password": "Password"
-    }
+    "noEventsTitle": "لا توجد فعاليات",
+    "noEventsSubtitle": "جرّب تغيير معايير البحث."
+  },
+  "Login": {
+    "title": "تسجيل الدخول",
+    "subtitle": "أدخل بياناتك للوصول إلى ملفك الشخصي",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "your@email.com",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "••••••••",
+    "rememberMe": "تذكرني",
+    "loginButton": "تسجيل الدخول",
+    "loggingIn": "جارٍ تسجيل الدخول...",
+    "formError": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى أو التسجيل.",
+    "noAccount": "ليس لديك حساب؟",
+    "signupLink": "سجّل الآن"
+  },
+  "Signup": {
+    "title": "إنشاء حساب",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "name@email.com",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "••••••••",
+    "nameLabel": "الاسم",
+    "namePlaceholder": "اسمك",
+    "homeCityLabel": "المدينة",
+    "homeCityPlaceholder": "مثال: الرياض",
+    "signupButton": "إنشاء حساب",
+    "errorUserExists": "المستخدم موجود بالفعل. يرجى استخدام بريد إلكتروني آخر.",
+    "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+    "loginLink": "تسجيل الدخول"
+  },
+  "Profile": {
+    "myProfile": "ملفي الشخصي",
+    "updateDetails": "حدّث معلوماتك الشخصية وادارة تفضيلاتك.",
+    "favoriteEvents": "الفعاليات المفضلة",
+    "savedEvents": "هذه هي الفعاليات التي حفظتها لوقت لاحق."
+  },
+  "ProfileForm": {
+    "title": "المعلومات الشخصية",
+    "description": "سيتم حفظ هذه المعلومات على هذا الجهاز.",
+    "name": "الاسم",
+    "homeCity": "المدينة",
+    "namePlaceholder": "اسمك",
+    "homeCityPlaceholder": "مثال: نيويورك",
+    "save": "حفظ التغييرات",
+    "updatedTitle": "تم تحديث الملف الشخصي",
+    "updatedDescription": "تم حفظ بياناتك بنجاح.",
+    "nameValidation": "يجب أن يكون الاسم على الأقل حرفين.",
+    "cityValidation": "يجب أن تكون المدينة على الأقل حرفين."
+  },
+  "Form": {
+    "what": "ماذا",
+    "where": "أين",
+    "event_artist_venue": "فعالية، فنان، أو مكان",
+    "city_placeholder": "مدينة، ولاية أو رمز بريدي",
+    "no_city_found": "لم يتم العثور على مدينة.",
+    "search": "بحث",
+    "please_enter": "يرجى إدخال كلمة بحث أو مدينة.",
+    "at_least_characters": "على الأقل 6 أحرف",
+    "name_too_short": "الاسم قصير جدًا",
+    "city_too_short": "أدخل مدينتك"
+  },
+  "EventDetails": {
+    "buyTickets": "شراء التذاكر",
+    "venueLocation": "موقع الفعالية",
+    "dateAtTime": "{{date}} في {{time}}",
+    "venueFull": "{{venue}}، {{city}}، {{address}}"
+  },
+  "Header": {
+    "brand": "سيتي بالس",
+    "profile": "الملف الشخصي",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب"
+  },
+  "Toasts": {
+    "profile_updated_title": "تم تحديث الملف الشخصي",
+    "profile_updated_desc": "تم حفظ بياناتك بنجاح."
+  },
+  "Loading": {
+    "loading": "جارٍ التحميل..."
+  },
+  "LocaleLayout": {
+    "title": "سيتي بالس",
+    "description": "مستكشف فعالياتك المحلية"
+  },
+  "FavoriteEventsList": {
+    "noFavoritesTitle": "لا توجد فعاليات مفضلة",
+    "noFavoritesDescription": "لم تحفظ أي فعاليات حتى الآن. ابدأ في الاستكشاف!"
+  },
+  "SearchForm": {
+    "whatLabel": "ما هو",
+    "whatPlaceholder": "حدث، فنان، أو مكان",
+    "whereLabel": "أين",
+    "wherePlaceholder": "المدينة، الولاية، أو الرمز البريدي",
+    "noCityFound": "لم يتم العثور على مدينة.",
+    "search": "بحث",
+    "validation": "يرجى إدخال كلمة مفتاحية أو مدينة."
   }
-  
+}

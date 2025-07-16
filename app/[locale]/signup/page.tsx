@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,15 +19,16 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
 
 const signupSchema = z.object({
-  email: z.string().email({ message: "Enter a valid email" }),
-  password: z.string().min(6, { message: "At least 6 characters" }),
-  name: z.string().min(2, { message: "Name is too short" }),
-  homeCity: z.string().min(2, { message: "Enter your city" }),
+  email: z.string().email(),
+  password: z.string().min(6),
+  name: z.string().min(2),
+  homeCity: z.string().min(2),
 });
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 export default function SignupPage() {
+  const t = useTranslations("Signup");
   const { signup } = useAuth();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +52,7 @@ export default function SignupPage() {
       true
     );
     if (!ok) {
-      setError("User already exists. Please use a different email.");
+      setError(t("errorUserExists"));
       return;
     }
     router.push("/profile");
@@ -59,7 +61,7 @@ export default function SignupPage() {
   return (
     <div className="flex min-h-[80vh] items-center justify-center">
       <div className="w-full max-w-md space-y-6 rounded-xl border bg-card p-8 shadow-md">
-        <h1 className="text-3xl font-bold mb-2">Sign Up</h1>
+        <h1 className="text-3xl font-bold mb-2">{t("title")}</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -67,9 +69,9 @@ export default function SignupPage() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("emailLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="name@email.com" {...field} />
+                    <Input placeholder={t("emailPlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -80,9 +82,13 @@ export default function SignupPage() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t("passwordLabel")}</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input
+                      type="password"
+                      placeholder={t("passwordPlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -93,9 +99,9 @@ export default function SignupPage() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{t("nameLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your name" {...field} />
+                    <Input placeholder={t("namePlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -106,16 +112,16 @@ export default function SignupPage() {
               name="homeCity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Home City</FormLabel>
+                  <FormLabel>{t("homeCityLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., New York" {...field} />
+                    <Input placeholder={t("homeCityPlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" className="w-full">
-              Sign Up
+              {t("signupButton")}
             </Button>
             {error && (
               <div className="text-red-600 text-center text-sm mt-2">
@@ -125,12 +131,12 @@ export default function SignupPage() {
           </form>
         </Form>
         <p className="text-sm text-center">
-          Already have an account?{" "}
+          {t("alreadyHaveAccount")}{" "}
           <a
             href="/login"
             className="underline text-primary hover:text-primary/80"
           >
-            Log In
+            {t("loginLink")}
           </a>
         </p>
       </div>
