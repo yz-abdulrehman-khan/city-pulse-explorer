@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type ReactNode } from "react";
 import { SplashScreen } from "./splash-screen";
+import { AuthProvider } from "@/context/auth-context";
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,5 +16,5 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(timer);
   }, []);
 
-  return isLoading ? <SplashScreen /> : <>{children}</>;
+  return isLoading ? <SplashScreen /> : <AuthProvider>{children}</AuthProvider>;
 }

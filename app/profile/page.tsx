@@ -1,9 +1,29 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 import { FavoriteEventsList } from "@/components/profile/favorite-events-list";
 import { ProfileForm } from "@/components/profile/profile-form";
+import { useAuth } from "@/hooks/use-auth";
+
 
 export default function ProfilePage() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    // If not loading and not authenticated, redirect to login
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  // While loading or if not authenticated, render nothing to prevent flash of content
+  if (isLoading || !isAuthenticated) {
+    return null;
+  }
+
   return (
     <div className="container mx-auto max-w-5xl space-y-12 py-12">
       <div>
