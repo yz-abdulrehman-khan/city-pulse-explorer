@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 const USERS_KEY = "city-pulse-users";
 
+// Helpers to read/write users object (email => { ...user, favorites: [] })
 function getUsersFromStorage(): Record<string, any> {
   try {
     const users = window.localStorage.getItem(USERS_KEY);
@@ -22,6 +23,7 @@ export function useFavorites() {
   const { currentUser } = useAuth();
   const [favorites, setFavorites] = useState<string[]>([]);
 
+  // Load user's favorites when logged in/out or changed
   useEffect(() => {
     if (!currentUser) {
       setFavorites([]);
@@ -31,10 +33,15 @@ export function useFavorites() {
     setFavorites(users[currentUser]?.favorites || []);
   }, [currentUser]);
 
+  // Save to both local state and persistent storage
   const saveFavorites = (newFavorites: string[]) => {
     if (!currentUser) return;
     const users = getUsersFromStorage();
-    users[currentUser] = users[currentUser] || { profile: {}, favorites: [] };
+    users[currentUser] = users[currentUser] || {
+      favorites: [],
+      profile: {},
+      email: currentUser,
+    };
     users[currentUser].favorites = newFavorites;
     saveUsersToStorage(users);
     setFavorites(newFavorites);
