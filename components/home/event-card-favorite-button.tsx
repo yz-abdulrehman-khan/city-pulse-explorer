@@ -17,7 +17,6 @@ export function EventCardFavoriteButton({
   const isFavorited = isFavorite(eventId);
 
   const handleToggleFavorite = (e: MouseEvent<HTMLButtonElement>) => {
-    // Prevent the click from bubbling up to the parent Link component
     e.preventDefault();
     e.stopPropagation();
 

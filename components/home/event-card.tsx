@@ -1,25 +1,19 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import type { TicketmasterEvent } from "@/lib/ticketmaster";
-import { CalendarIcon, MapPinIcon, TicketIcon } from "lucide-react";
-import { EventCardFavoriteButton } from "./event-card-favorite-button";
+import { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import type { TicketmasterEvent } from "@/lib/ticketmaster"
+import { CalendarIcon, MapPinIcon, TicketIcon } from "lucide-react"
+import { EventCardFavoriteButton } from "./event-card-favorite-button"
 
 export function EventCard({ event }: { event: TicketmasterEvent }) {
-  const [imgError, setImgError] = useState(false);
+  const [imgError, setImgError] = useState(false)
 
-  const venue = event._embedded?.venues[0];
+  const venue = event._embedded?.venues[0]
   // FIX: Add optional chaining to prevent crash if event.images is undefined
-  const eventImage = event.images?.find((image) => image.ratio === "3_2")?.url;
+  const eventImage = event.images?.find((image) => image.ratio === "3_2")?.url
 
   return (
     <Link href={`/events/${event.id}`} className="flex">
@@ -43,14 +37,8 @@ export function EventCard({ event }: { event: TicketmasterEvent }) {
           <EventCardFavoriteButton eventId={event.id} />
         </CardHeader>
         <CardContent className="flex-grow p-4">
-          <CardTitle className="mb-2 line-clamp-2 text-lg group-hover:underline">
-            {event.name}
-          </CardTitle>
-          {event.info && (
-            <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
-              {event.info}
-            </p>
-          )}
+          <CardTitle className="mb-2 line-clamp-2 text-lg group-hover:underline">{event.name}</CardTitle>
+          {event.info && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{event.info}</p>}
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <CalendarIcon className="h-4 w-4" />
             <span>{event.dates.start.localDate}</span>
@@ -70,7 +58,7 @@ export function EventCard({ event }: { event: TicketmasterEvent }) {
         </CardFooter>
       </Card>
     </Link>
-  );
+  )
 }
 
 export function EventCardSkeleton() {
@@ -88,5 +76,5 @@ export function EventCardSkeleton() {
         <div className="h-4 w-2/3 rounded-md bg-muted" />
       </CardFooter>
     </Card>
-  );
+  )
 }

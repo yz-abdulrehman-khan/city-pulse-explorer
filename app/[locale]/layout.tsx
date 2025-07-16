@@ -53,11 +53,23 @@ export default async function LocaleLayout({ children, params }: Props) {
       dir={locale === "ar" ? "rtl" : "ltr"}
       className={GeistSans.className}
     >
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body
+        className="min-h-screen bg-background font-sans antialiased text-foreground
+        flex flex-col
+        selection:bg-primary/20
+        transition-colors
+        px-safe"
+      >
         <AppProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <Header />
-            <main className="flex-1">{children}</main>
+
+            <main
+              className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4
+              mt-2"
+            >
+              {children}
+            </main>
           </NextIntlClientProvider>
           <Toaster />
         </AppProvider>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export function Header() {
   const { isAuthenticated, logout } = useAuth();
@@ -20,45 +21,48 @@ export function Header() {
           <Ticket className="h-6 w-6" />
           <span className="font-bold">{t("brand")}</span>
         </Link>
-        <nav className="flex items-center space-x-4">
-          {isAuthenticated ? (
-            <>
-              <Link
-                href="/"
-                className="flex items-center text-primary hover:text-primary/80 transition-colors space-x-2"
-              >
-                <Home className="h-6 w-6" />
-              </Link>
-              <Link
-                href="/profile"
-                className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-              >
-                <User className="mr-2 h-5 w-5" />
-                {t("profile")}
-              </Link>
-              <Button variant="ghost" size="sm" onClick={logout}>
-                <LogOut className="mr-2 h-5 w-5" />
-              </Button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-              >
-                <User className="mr-2 h-5 w-5" />
-                {t("login")}
-              </Link>
-              <Link
-                href="/signup"
-                className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-              >
-                <User className="mr-2 h-5 w-5" />
-                {t("signup")}
-              </Link>
-            </>
-          )}
-        </nav>
+        <div className="flex items-center space-x-2">
+          <nav className="flex items-center space-x-4">
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/"
+                  className="flex items-center text-primary hover:text-primary/80 transition-colors space-x-2"
+                >
+                  <Home className="h-6 w-6" />
+                </Link>
+                <Link
+                  href="/profile"
+                  className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <User className="mr-2 h-5 w-5" />
+                  {t("profile")}
+                </Link>
+                <Button variant="ghost" size="sm" onClick={logout}>
+                  <LogOut className="mr-2 h-5 w-5" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <User className="mr-2 h-5 w-5" />
+                  {t("login")}
+                </Link>
+                <Link
+                  href="/signup"
+                  className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <User className="mr-2 h-5 w-5" />
+                  {t("signup")}
+                </Link>
+              </>
+            )}
+          </nav>
+          <LanguageSwitcher />
+        </div>
       </div>
     </header>
   );

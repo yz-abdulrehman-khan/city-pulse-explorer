@@ -55,7 +55,7 @@ export default function SignupPage() {
       setError(t("errorUserExists"));
       return;
     }
-    router.push("/profile");
+    router.push("/");
   }
 
   return (

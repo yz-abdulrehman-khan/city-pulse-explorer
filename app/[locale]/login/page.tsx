@@ -19,6 +19,7 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
 import { useTranslations } from "next-intl";
+import { Loader2 } from "lucide-react";
 
 const loginFormSchema = z.object({
   email: z.string().email({ message: "Login.formError" }),
@@ -45,17 +46,25 @@ export default function LoginPage() {
     },
   });
 
-  function onSubmit(data: LoginFormValues) {
+  async function onSubmit(data: LoginFormValues) {
     setFormError(null);
     setIsLoading(true);
-    // Authenticate
-    const success = login(data.email, data.password, data.rememberMe || false);
-    setIsLoading(false);
-    if (!success) {
+    try {
+      const success = await login(
+        data.email,
+        data.password,
+        data.rememberMe || false
+      );
+      if (!success) {
+        setFormError(t("formError"));
+        setIsLoading(false);
+        return;
+      }
+    } catch (err) {
       setFormError(t("formError"));
-      return;
+    } finally {
+      setIsLoading(false);
     }
-    // Otherwise, redirected to /profile by context
   }
 
   return (
@@ -82,6 +91,7 @@ export default function LoginPage() {
                         placeholder={t("emailPlaceholder")}
                         {...field}
                         autoComplete="username"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -100,6 +110,7 @@ export default function LoginPage() {
                         placeholder={t("passwordPlaceholder")}
                         {...field}
                         autoComplete="current-password"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -116,6 +127,7 @@ export default function LoginPage() {
                         checked={field.value}
                         onCheckedChange={field.onChange}
                         id="remember-me"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <Label
@@ -127,7 +139,15 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full flex items-center justify-center"
+                disabled={isLoading}
+                aria-busy={isLoading}
+              >
+                {isLoading && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />
+                )}
                 {isLoading ? t("loggingIn") : t("loginButton")}
               </Button>
               {formError && (

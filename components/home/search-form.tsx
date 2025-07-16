@@ -98,7 +98,13 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSearch)}>
-        <div className="flex w-full flex-col rounded-lg bg-card p-3 md:flex-row md:items-center md:space-x-2 md:space-y-0">
+        <div
+          className={cn(
+            "flex w-full flex-col rounded-lg bg-card p-3",
+            // Responsive: stack on mobile, row on md+
+            "md:flex-row md:items-center md:space-x-2 md:space-y-0 space-y-2 md:space-y-0"
+          )}
+        >
           {/* Keyword */}
           <FormField
             control={form.control}
@@ -191,7 +197,7 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
           <Button
             type="submit"
             size="icon"
-            className="h-12 w-12 flex-shrink-0 cursor-pointer"
+            className="h-12 w-12 flex-shrink-0 cursor-pointer mt-2 md:mt-0"
             disabled={!isValid || isSearching}
           >
             <Search className="h-5 w-5" />
