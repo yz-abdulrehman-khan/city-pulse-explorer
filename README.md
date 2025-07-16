@@ -120,17 +120,16 @@ city-pulse-explorer/
 ## Screenshots 📸
 
 ### Home Page
-![Home Page](<img width="1512" height="857" alt="Screenshot 2025-07-16 at 7 59 49 PM" src="https://github.com/user-attachments/assets/adc2afb8-38d9-4a7d-a3c2-d23d676deddf" />)
-
+![Home Page](https://github.com/user-attachments/assets/adc2afb8-38d9-4a7d-a3c2-d23d676deddf)
 
 ### Event Search
-![Event Search](<img width="1512" height="468" alt="Screenshot 2025-07-16 at 8 01 11 PM" src="https://github.com/user-attachments/assets/fbeba5d6-9d0a-4e3b-b6ba-4afc539fa3c4" />)
+![Event Search](https://github.com/user-attachments/assets/fbeba5d6-9d0a-4e3b-b6ba-4afc539fa3c4)
 
 ### Event Details
-![Event Details](<img width="1512" height="855" alt="Screenshot 2025-07-16 at 8 01 45 PM" src="https://github.com/user-attachments/assets/25b58491-b016-4fa1-a394-6c0ff571c5c5" />)
+![Event Details](https://github.com/user-attachments/assets/25b58491-b016-4fa1-a394-6c0ff571c5c5)
 
 ### User Profile
-![User Profile](<img width="1512" height="855" alt="Screenshot 2025-07-16 at 8 02 37 PM" src="https://github.com/user-attachments/assets/4e145856-f5c3-4148-84ac-eb3675dbfd84" />)
+![User Profile](https://github.com/user-attachments/assets/4e145856-f5c3-4148-84ac-eb3675dbfd84)
 
 
 ---
