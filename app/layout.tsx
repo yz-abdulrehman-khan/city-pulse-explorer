@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background font-sans antialiased">
         <AppProvider>
           <Header />
-          <main className="flex-1 px-6 sm:px-8 md:px-10">{children}</main>
+          <main className="flex-1 ">{children}</main>
           <Toaster />
         </AppProvider>
       </body>

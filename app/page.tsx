@@ -41,7 +41,7 @@ export default function Home() {
 
   return (
     <>
-      <section className="grid items-center gap-8 pb-8 pt-6 md:py-10">
+      <section className="grid items-center gap-8 pb-8 pt-6 md:py-10  container mx-auto max-w-5xl py-12">
         <div className="flex max-w-[980px] flex-col items-start gap-2">
           <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
             Discover Events Happening Around You
@@ -59,7 +59,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="pb-12">
+      <section className="container mx-auto max-w-5xl py-12">
         {/* Initial State Message */}
         {!isSearching && searchResult === null && (
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">

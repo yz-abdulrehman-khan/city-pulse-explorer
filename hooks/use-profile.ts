@@ -1,40 +1,55 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/hooks/use-auth";
 
-const PROFILE_KEY = "city-pulse-profile";
+const USERS_KEY = "city-pulse-users";
 
 export interface ProfileData {
   name: string;
   homeCity: string;
 }
 
+function getUsersFromStorage(): Record<string, any> {
+  try {
+    const users = window.localStorage.getItem(USERS_KEY);
+    return users ? JSON.parse(users) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveUsersToStorage(users: Record<string, any>) {
+  window.localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
 export function useProfile() {
+  const { currentUser } = useAuth();
   const [profile, setProfile] = useState<ProfileData>({
     name: "",
     homeCity: "",
   });
 
-  // Load profile from localStorage on initial client-side render
   useEffect(() => {
-    try {
-      const storedProfile = window.localStorage.getItem(PROFILE_KEY);
-      if (storedProfile) {
-        setProfile(JSON.parse(storedProfile));
-      }
-    } catch (error) {
-      console.error("Error reading profile from localStorage", error);
+    if (!currentUser) {
+      setProfile({ name: "", homeCity: "" });
+      return;
     }
-  }, []);
+    const users = getUsersFromStorage();
+    setProfile(users[currentUser]?.profile || { name: "", homeCity: "" });
+  }, [currentUser]);
 
-  const saveProfile = useCallback((newProfile: ProfileData) => {
-    try {
+  const saveProfile = useCallback(
+    (newProfile: ProfileData) => {
+      if (!currentUser) return;
+      const users = getUsersFromStorage();
+      users[currentUser] = users[currentUser] || { profile: {}, favorites: [] };
+      users[currentUser].profile = newProfile;
+      saveUsersToStorage(users);
       setProfile(newProfile);
-      window.localStorage.setItem(PROFILE_KEY, JSON.stringify(newProfile));
-    } catch (error) {
-      console.error("Error saving profile to localStorage", error);
-    }
-  }, []);
+    },
+    [currentUser]
+  );
 
   return { profile, saveProfile };
 }

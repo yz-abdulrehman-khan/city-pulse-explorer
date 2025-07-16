@@ -13,16 +13,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import { Label } from "@/components/ui/label";
-
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
-import Image from "next/image";
-
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
+import Image from "next/image";
 
 const loginFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -33,8 +30,11 @@ const loginFormSchema = z.object({
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 export default function LoginPage() {
-  const { login, isAuthenticated, isLoading } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
+
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -45,45 +45,21 @@ export default function LoginPage() {
     },
   });
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      router.push("/profile");
-    }
-  }, [isAuthenticated, isLoading, router]);
-
   function onSubmit(data: LoginFormValues) {
-    // In a real app, you'd validate the password. Here, we just log in.
-    login(data.email, data.rememberMe || false);
-  }
-
-  // Don't render the page if we're loading or about to redirect
-  if (isLoading || isAuthenticated) {
-    return <div className="fixed inset-0 bg-background" />;
+    setFormError(null);
+    setIsLoading(true);
+    // Authenticate
+    const success = login(data.email, data.password, data.rememberMe || false);
+    setIsLoading(false);
+    if (!success) {
+      setFormError("Invalid email or password. Please try again or sign up.");
+      return;
+    }
+    // Otherwise, redirected to /profile by context
   }
 
   return (
-    <div className="w-full lg:grid lg:min-h-[calc(100vh-4rem)] lg:grid-cols-2">
-      <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-        <Image
-          src="/placeholder.svg?width=1080&height=1920"
-          alt="Abstract city lights"
-          fill
-          className="object-cover"
-        />
-        <div className="relative z-20 flex items-center text-lg font-medium">
-          <Search className="mr-2 h-6 w-6" />
-          City Pulse
-        </div>
-        <div className="relative z-20 mt-auto">
-          <blockquote className="space-y-2">
-            <p className="text-lg">
-              “The pulse of the city is in its events. Find your rhythm.”
-            </p>
-            <footer className="text-sm">City Pulse Explorer</footer>
-          </blockquote>
-        </div>
-      </div>
+    <div className="w-full lg:grid lg:min-h-[calc(100vh-4rem)]">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
@@ -105,6 +81,7 @@ export default function LoginPage() {
                         type="email"
                         placeholder="m@example.com"
                         {...field}
+                        autoComplete="username"
                       />
                     </FormControl>
                     <FormMessage />
@@ -122,6 +99,7 @@ export default function LoginPage() {
                         type="password"
                         placeholder="••••••••"
                         {...field}
+                        autoComplete="current-password"
                       />
                     </FormControl>
                     <FormMessage />
@@ -149,11 +127,25 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
+              {formError && (
+                <div className="text-red-600 text-center text-sm mt-1">
+                  {formError}
+                </div>
+              )}
             </form>
           </Form>
+          <p className="text-center text-sm mt-4">
+            Don&apos;t have an account?{" "}
+            <a
+              href="/signup"
+              className="underline text-primary hover:text-primary/80 font-medium"
+            >
+              Sign up
+            </a>
+          </p>
         </div>
       </div>
     </div>
