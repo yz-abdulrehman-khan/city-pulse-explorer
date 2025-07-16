@@ -1,10 +1,21 @@
 "use client";
 
 import { FavoriteEventsList } from "@/components/profile/favorite-events-list";
+import { ProfileForm } from "@/components/profile/profile-form";
 
 export default function ProfilePage() {
   return (
     <div className="container mx-auto max-w-5xl space-y-12 py-12">
+      <div>
+        <h2 className="text-3xl font-extrabold tracking-tight">My Profile</h2>
+        <p className="text-muted-foreground">
+          Update your personal details and manage your preferences.
+        </p>
+        <div className="mt-6">
+          <ProfileForm />
+        </div>
+      </div>
+
       <div>
         <h2 className="text-3xl font-extrabold tracking-tight">
           Favorite Events
