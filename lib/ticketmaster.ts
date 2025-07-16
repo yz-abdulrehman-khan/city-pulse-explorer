@@ -1,13 +1,13 @@
 import axios from "axios";
 
+// Define a type for the event data we expect to receive.
+// This helps with autocompletion and prevents bugs.
 export interface TicketmasterEvent {
   id: string;
   name: string;
   url: string;
-  info?: string;
-  images: {
-      ratio: string; url: string 
-}[];
+  info?: string; // Add the optional info/description field
+  images: { url: string }[];
   dates: {
     start: {
       localDate: string;
@@ -24,32 +24,43 @@ export interface TicketmasterEvent {
   };
 }
 
+// We'll also define a shape for the entire API response, including pagination info
+export interface TicketmasterResponse {
+  _embedded?: {
+    events: TicketmasterEvent[];
+  };
+  page: {
+    size: number;
+    totalElements: number;
+    totalPages: number;
+    number: number; // This is the current page number (0-indexed)
+  };
+}
+
 const ticketmasterApi = axios.create({
   baseURL: "https://app.ticketmaster.com/discovery/v2/",
 });
 
 export async function searchEvents(
   keyword: string,
-  city: string
-): Promise<TicketmasterEvent[]> {
+  city: string,
+  page = 0
+): Promise<TicketmasterResponse> {
   try {
     const response = await ticketmasterApi.get("events.json", {
       params: {
         apikey: process.env.TICKETMASTER_API_KEY,
         keyword,
         city,
-        size: 20, // Get up to 20 events
+        size: 20,
+        page,
       },
     });
-
-    // The events are nested in the _embedded property.
-    // If it doesn't exist, there are no events, so we return an empty array.
-    return response.data._embedded?.events || [];
+    return response.data;
   } catch (error) {
     console.error("Error fetching events from Ticketmaster:", error);
-    // In case of an API error, we'll return an empty array
-    // to prevent the app from crashing.
-    return [];
+    // Return a default structure in case of an error
+    return { page: { size: 0, totalElements: 0, totalPages: 0, number: 0 } };
   }
 }
 
@@ -64,8 +75,6 @@ export async function getEventById(
     });
     return response.data;
   } catch (error) {
-    // If the event is not found, Ticketmaster returns a 404, which axios will throw as an error.
-    // We'll log the error for debugging but return null to the caller.
     console.error(`Error fetching event with ID ${id}:`, error);
     return null;
   }

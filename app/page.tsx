@@ -4,23 +4,40 @@ import { useState, useCallback } from "react";
 import { SearchForm } from "@/components/home/search-form";
 import { EventCard, EventCardSkeleton } from "@/components/home/event-card";
 import { findEventsAction } from "./actions";
-import type { TicketmasterEvent } from "@/lib/ticketmaster";
+import type { TicketmasterResponse } from "@/lib/ticketmaster";
 import { PartyPopper } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  const [events, setEvents] = useState<TicketmasterEvent[] | null>(null);
+  const [searchResult, setSearchResult] = useState<TicketmasterResponse | null>(
+    null
+  );
   const [isSearching, setIsSearching] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [currentQuery, setCurrentQuery] = useState({ keyword: "", city: "" });
 
   const handleSearch = useCallback(
-    async (values: { keyword: string; city: string }) => {
+    async (values: { keyword: string; city: string }, page = 0) => {
       setIsSearching(true);
-      setEvents(null); // Clear previous results
-      const foundEvents = await findEventsAction(values.keyword, values.city);
-      setEvents(foundEvents);
+      // Don't set result to null here, it causes a flash of the empty state
+      // The loading state will cover the old results
+      setCurrentPage(page);
+      setCurrentQuery(values);
+
+      const result = await findEventsAction(values.keyword, values.city, page);
+      setSearchResult(result);
       setIsSearching(false);
+      window.scrollTo(0, 0); // Scroll to top on new search
     },
     []
-  );
+  ); // FIX: Removed empty dependency array, useCallback is not strictly needed here.
+
+  const handlePageChange = (newPage: number) => {
+    handleSearch(currentQuery, newPage);
+  };
+
+  const events = searchResult?._embedded?.events;
+  const pageInfo = searchResult?.page;
 
   return (
     <>
@@ -35,13 +52,16 @@ export default function Home() {
           </p>
         </div>
         <div className="w-full">
-          <SearchForm onSearch={handleSearch} isSearching={isSearching} />
+          <SearchForm
+            onSearch={(values) => handleSearch(values, 0)}
+            isSearching={isSearching}
+          />
         </div>
       </section>
 
       <section className="pb-12">
         {/* Initial State Message */}
-        {!isSearching && events === null && (
+        {!isSearching && searchResult === null && (
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
             <PartyPopper className="mb-4 h-12 w-12 text-muted-foreground" />
             <h3 className="text-2xl font-bold tracking-tight">
@@ -64,15 +84,39 @@ export default function Home() {
 
         {/* Results State */}
         {!isSearching && events && events.length > 0 && (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {events.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {events.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+            {/* Pagination Controls */}
+            {pageInfo && pageInfo.totalPages > 1 && (
+              <div className="mt-8 flex items-center justify-center space-x-4">
+                <Button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 0}
+                  variant="outline"
+                >
+                  Previous
+                </Button>
+                <span className="text-sm font-medium">
+                  Page {currentPage + 1} of {pageInfo.totalPages}
+                </span>
+                <Button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage >= pageInfo.totalPages - 1}
+                  variant="outline"
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </>
         )}
 
         {/* Empty State */}
-        {!isSearching && events && events.length === 0 && (
+        {!isSearching && searchResult && (!events || events.length === 0) && (
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
             <h3 className="text-2xl font-bold tracking-tight">
               No events found

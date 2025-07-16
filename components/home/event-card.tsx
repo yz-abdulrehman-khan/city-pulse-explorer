@@ -18,7 +18,8 @@ export function EventCard({ event }: { event: TicketmasterEvent }) {
   const [imgError, setImgError] = useState(false);
 
   const venue = event._embedded?.venues[0];
-  const eventImage = event.images.find((image) => image.ratio === "3_2")?.url;
+  // FIX: Add optional chaining to prevent crash if event.images is undefined
+  const eventImage = event.images?.find((image) => image.ratio === "3_2")?.url;
 
   return (
     <Link href={`/events/${event.id}`} className="flex">
