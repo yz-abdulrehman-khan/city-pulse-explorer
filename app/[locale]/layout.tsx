@@ -12,6 +12,7 @@ import { Header } from "@/components/layout/header"; // Or Navigation
 import { AppProvider } from "@/components/layout/app-provider";
 import { Toaster } from "@/components/ui/toaster";
 import "../globals.css";
+import { FavoritesProvider } from "@/context/favoriate-context";
 
 type Props = {
   children: ReactNode;
@@ -61,17 +62,19 @@ export default async function LocaleLayout({ children, params }: Props) {
         px-safe"
       >
         <AppProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <Header />
+          <FavoritesProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              <Header />
 
-            <main
-              className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4
+              <main
+                className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4
               mt-2"
-            >
-              {children}
-            </main>
-          </NextIntlClientProvider>
-          <Toaster />
+              >
+                {children}
+              </main>
+            </NextIntlClientProvider>
+            <Toaster />
+          </FavoritesProvider>
         </AppProvider>
       </body>
     </html>

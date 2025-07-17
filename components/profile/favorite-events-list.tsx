@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { useFavorites } from "@/hooks/use-favorites";
+
 import { getEventsByIds } from "@/app/actions";
 import type { TicketmasterEvent } from "@/lib/ticketmaster";
 import { EventCard, EventCardSkeleton } from "@/components/home/event-card";
 import { HeartCrack } from "lucide-react";
+import { useFavorites } from "@/hooks/use-favorites";
 
 export function FavoriteEventsList() {
   const t = useTranslations("FavoriteEventsList");
@@ -19,6 +20,7 @@ export function FavoriteEventsList() {
     if (favorites.length > 0) {
       getEventsByIds(favorites)
         .then(setEvents)
+        .catch(() => setEvents([]))
         .finally(() => setIsLoading(false));
     } else {
       setEvents([]);

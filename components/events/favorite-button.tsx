@@ -1,9 +1,9 @@
 "use client";
 
-import { useFavorites } from "@/hooks/use-favorites";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFavorites } from "@/hooks/use-favorites";
 
 interface FavoriteButtonProps {
   eventId: string;

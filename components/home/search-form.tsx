@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +19,7 @@ import { Combobox } from "@headlessui/react";
 import { cn } from "@/lib/utils";
 import { CITIES } from "@/lib/cities";
 import { useTranslations } from "next-intl";
+import { debounce } from "lodash";
 
 interface SearchFormProps {
   onSearch: (values: any) => void;
@@ -50,29 +51,48 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
 
   const { isValid } = form.formState;
   const locationFetchedRef = useRef(false);
-
   const [query, setQuery] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
 
-  const filteredCities = !query
-    ? CITIES
-    : CITIES.filter((city) =>
-        city.toLowerCase().includes((query ?? "").toLowerCase())
-      );
+  // Memoize filtered cities to prevent recalculation unless query changes
+  const filteredCities = useMemo(
+    () =>
+      !query
+        ? CITIES
+        : CITIES.filter((city) =>
+            city.toLowerCase().includes(query.toLowerCase())
+          ),
+    [query]
+  );
 
-  // Watch city value from form, never undefined
-  useEffect(() => {
-    setSelectedCity(form.watch("city") ?? "");
-  }, [form.watch("city")]);
+  // Debounce the input handler to reduce frequency of state updates
+  const debouncedSetQuery = useCallback(
+    debounce((value: string) => {
+      setQuery(value);
+    }, 300),
+    []
+  );
 
-  // Sync combobox value with form value
+  // Watch city value and sync with selectedCity
   useEffect(() => {
-    form.setValue("city", selectedCity ?? "");
+    const subscription = form.watch((value, { name }) => {
+      if (name === "city") {
+        setSelectedCity(value.city ?? "");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
+  // Sync selectedCity with form
+  useEffect(() => {
+    form.setValue("city", selectedCity, { shouldValidate: true });
   }, [selectedCity, form]);
 
+  // Fetch geolocation and set city (run once)
   useEffect(() => {
-    if (locationFetchedRef.current) return;
+    if (locationFetchedRef.current || !navigator.geolocation) return;
     locationFetchedRef.current = true;
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
@@ -85,7 +105,6 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
             form.setValue("city", data.city, { shouldValidate: true });
             setSelectedCity(data.city);
             setQuery(data.city);
-            onSearch({ keyword: "", city: data.city });
           }
         } catch (error) {
           // Silent fail
@@ -93,19 +112,24 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
       },
       () => {}
     );
-  }, [form, onSearch]);
+  }, [form]);
+
+  const handleSubmit = useCallback(
+    (values: SearchFormValues) => {
+      onSearch(values);
+    },
+    [onSearch]
+  );
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSearch)}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div
           className={cn(
             "flex w-full flex-col rounded-lg bg-card p-3",
-            // Responsive: stack on mobile, row on md+
             "md:flex-row md:items-center md:space-x-2 md:space-y-0 space-y-2 md:space-y-0"
           )}
         >
-          {/* Keyword */}
           <FormField
             control={form.control}
             name="keyword"
@@ -124,10 +148,7 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
               </FormItem>
             )}
           />
-
           <Separator orientation="vertical" className="hidden h-10 md:block" />
-
-          {/* City with custom Combobox */}
           <FormField
             control={form.control}
             name="city"
@@ -140,7 +161,7 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
                   <div className="relative flex items-center">
                     <MapPin className="absolute left-0 h-5 w-5 text-muted-foreground z-10" />
                     <Combobox
-                      value={selectedCity ?? ""}
+                      value={selectedCity}
                       onChange={(city) => {
                         setSelectedCity(city ?? "");
                         setQuery(city ?? "");
@@ -156,10 +177,11 @@ export function SearchForm({ onSearch, isSearching }: SearchFormProps) {
                           )}
                           displayValue={(city: string) => city}
                           onChange={(event) => {
-                            setQuery(event.target.value ?? "");
-                            setSelectedCity(event.target.value ?? "");
+                            const value = event.target.value ?? "";
+                            debouncedSetQuery(value);
+                            setSelectedCity(value);
                           }}
-                          value={selectedCity ?? ""}
+                          value={selectedCity}
                           autoComplete="off"
                           onBlur={field.onBlur}
                         />

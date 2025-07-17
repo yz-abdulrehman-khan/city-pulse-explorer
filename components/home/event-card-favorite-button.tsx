@@ -1,10 +1,10 @@
 "use client";
 
 import type { MouseEvent } from "react";
-import { useFavorites } from "@/hooks/use-favorites";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFavorites } from "@/hooks/use-favorites";
 
 interface EventCardFavoriteButtonProps {
   eventId: string;
