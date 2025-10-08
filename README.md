@@ -115,46 +115,6 @@ city-pulse-explorer/
 └── public/
 ```
 
-
-```
-
-insurance-platform/
-├── src/
-│   ├── app/                     # App configuration
-│   │   ├── providers/           # Auth, Theme, Query providers
-│   │   ├── router/              # Route configuration
-│   │   └── store/               # Global state setup
-│   │
-│   ├── domains/                 # Business domains (DDD)
-│   │   ├── insurance-core/      # Shared insurance logic
-│   │   │   ├── types/           # Policy, Coverage, Customer types
-│   │   │   ├── services/        # PricingEngine, PolicyValidator
-│   │   │   └── hooks/           # useQuoteCalculation, usePolicyRules
-│   │   │
-│   │   └── home-insurance/      # Home insurance specific
-│   │       ├── components/      # PropertyForm, CoverageSelector
-│   │       ├── pages/           # QuoteJourney, PolicyDashboard
-│   │       ├── services/        # HomeInsuranceAPI, PropertyValuation
-│   │       └── types/           # HomeProperty, HomeCoverage
-│   │
-│   └── shared/                  # Shared across all domains
-│       ├── components/          # UI library
-│       │   ├── ui/              # Button, Input, Modal, Card
-│       │   ├── forms/           # FormField, FormWizard, FileUpload
-│       │   └── layout/          # Header, Footer, PageLayout
-│       │
-│       ├── services/            # Common services
-│       │   ├── api/             # HTTP client, interceptors
-│       │   ├── auth/            # Authentication
-│       │   ├── payment/         # Payment gateway
-│       │   └── validation/      # Form validation schemas
-│       │
-│       ├── hooks/               # Shared hooks
-│       ├── utils/               # Formatters, helpers, constants
-│       └── types/               # Global TypeScript types
-
-```
-
 ---
 
 ## Screenshots 📸
